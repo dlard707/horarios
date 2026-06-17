@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Horários - Educadores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Tela de Login */
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-container h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        .login-container input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+        }
+
+        .btn-danger {
+            background: #f56565;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        /* Conteúdo Principal */
+        .main-container {
+            display: none;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 1200px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin-bottom: 10px;
+        }
+
+        .toolbar {
+            padding: 15px;
+            background: #f7fafc;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .content {
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        tr:hover {
+            background: #edf2f7;
+        }
+
+        .editable {
+            background: #fff;
+            cursor: pointer;
+            border: 1px dashed #cbd5e0;
+            padding: 5px;
+            min-height: 20px;
+        }
+
+        .editable:focus {
+            outline: none;
+            background: #fffff0;
+            border: 1px solid #667eea;
+        }
+
+        .total-row {
+            background: #667eea !important;
+            color: white;
+            font-weight: bold;
+        }
+
+        .error-msg {
+            color: #e53e3e;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .success-msg {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        @media print {
+            .toolbar, .login-container {
+                display: none !important;
+            }
+            .main-container {
+                display: block !important;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Tela de Login -->
+    <div class="login-container" id="loginScreen">
+        <h2>🔐 Acesso Restrito</h2>
+        <p>Digite a senha para acessar o sistema</p>
+        <input type="password" id="passwordInput" placeholder="Digite a senha..." autofocus>
+        <button class="btn" onclick="checkPassword()">Entrar</button>
+        <p class="error-msg" id="errorMsg">Senha incorreta!</p>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="main-container" id="mainScreen">
+        <div class="header">
+            <h1>📅 Sistema de Controle de Horários</h1>
+            <p>Gerenciamento de Aulas - Terças, Quartas e Quintas (19h às 22h)</p>
+        </div>
+
+        <div class="toolbar">
+            <button class="btn" onclick="enableEdit()">✏️ Editar Tabela</button>
+            <button class="btn btn-secondary" onclick="saveData()">💾 Salvar Alterações</button>
+            <button class="btn btn-secondary" onclick="window.print()">🖨️ Imprimir</button>
+            <button class="btn btn-danger" onclick="logout()">🚪 Sair</button>
+        </div>
+
+        <div class="content">
+            <div class="success-msg" id="successMsg">Alterações salvas com sucesso!</div>
+
+            <h3 style="margin: 20px 0 10px 0; color: #333;">👥 Corpo Docente</h3>
+            <table id="teachersTable">
+                <thead>
+                    <tr>
+                        <th>Carga Horária</th>
+                        <th>Nome do Educador</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="editable" contenteditable="false" data-field="hours1">EDUCADOR 8H</td>
+                        <td class="editable" contenteditable="false" data-field="name1">ZIFIR MAIA CAMPOS</td>
+                    </tr>
+                    <tr>
+                        <td class="editable" contenteditable="false" data-field="hours2">EDUCADOR 15H</td>
+                        <td class="editable" contenteditable="false" data-field="name2">DAVID ARIEL LARRONDA</td>
+                    </tr>
+                    <tr>
+                        <td class="editable" contenteditable="false" data-field="hours3">EDUCADOR 13H</td>
+                        <td class="editable" contenteditable="false" data-field="name3">MARILENE PEREIRA DA SILVA</td>
+                    </tr>
+                    <tr>
+                        <td class="editable" contenteditable="false" data-field="hours4">EDUCADOR 15H</td>
+                        <td class="editable" contenteditable="false" data-field="name4">ARLINDO FERREIRA MAIA</td>
+                    </tr>
+                    <tr>
+                        <td class="editable" contenteditable="false" data-field="hours5">EDUCADOR 13H</td>
+                        <td class="editable" contenteditable="false" data-field="name5">ERIKA DE CASSIA CAPELLA</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="2">TOTAL DE HORAS 64</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="margin: 30px 0 10px 0; color: #333;">📆 Escala Semanal de Aulas</h3>
+            <table id="scheduleTable">
+                <thead>
+                    <tr>
+                        <th>Semana</th>
+                        <th>Terça-feira (19h-22h)</th>
+                        <th>Quarta-feira (19h-22h)</th>
+                        <th>Quinta-feira (19h-22h)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="editable" contenteditable="false">Semana 1</td>
+                        <td class="editable" contenteditable="false">David (3h)</td>
+                        <td class="editable" contenteditable="false">Arlindo (3h)</td>
+                        <td class="editable" contenteditable="false">Marilene (3h)</td>
+                    </tr>
+                    <tr>
+                        <td class="editable" contenteditable="false">Semana 2</td>
+                        <td class="editable" contenteditable="false">Erika (3h)</td>
+                        <td class="editable" contenteditable="false">Zifir (3h)</td>
+                        <td class="editable" contenteditable="false">David (3h)</td>
+                    </tr>
+                    <tr>
+                        <td class="editable" contenteditable="false">Semana 3</td>
+                        <td class="editable" contenteditable="false">Arlindo (3h)</td>
+                        <td class="editable" contenteditable="false">Marilene (3h)</td>
+                        <td class="editable" contenteditable="false">Erika (3h)</td>
+                    </tr>
+                    <tr>
+                        <td class="editable" contenteditable="false">Semana 4</td>
+                        <td class="editable" contenteditable="false">David (3h)</td>
+                        <td class="editable" contenteditable="false">Arlindo (3h)</td>
+                        <td class="editable" contenteditable="false">Zifir (3h)</td>
+                    </tr>
+                    <tr>
+                        <td class="editable" contenteditable="false">Semana 5</td>
+                        <td class="editable" contenteditable="false">Marilene (3h)</td>
+                        <td class="editable" contenteditable="false">Erika (3h)</td>
+                        <td class="editable" contenteditable="false">David (3h)</td>
+                    </tr>
+                    <tr>
+                        <td class="editable" contenteditable="false">Semana 6</td>
+                        <td class="editable" contenteditable="false">Arlindo (3h)</td>
+                        <td class="editable" contenteditable="false">Marilene (3h)</td>
+                        <td class="editable" contenteditable="false">Erika (3h)</td>
+                    </tr>
+                    <tr>
+                        <td class="editable" contenteditable="false">Semana 7</td>
+                        <td class="editable" contenteditable="false">David (3h)</td>
+                        <td class="editable" contenteditable="false">Arlindo (3h)</td>
+                        <td class="editable" contenteditable="false">Zifir (2h) + Marilene/Erika (1h)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="background: #fef3c7; padding: 15px; border-radius: 5px; margin-top: 20px; border-left: 4px solid #f59e0b;">
+                <strong>⚠️ Observações:</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Clique em "Editar Tabela" para modificar os dados</li>
+                    <li>Após editar, clique em "Salvar Alterações" para guardar</li>
+                    <li>Os dados são salvos no navegador (localStorage)</li>
+                    <li>Use "Imprimir" para gerar PDF ou imprimir a tabela</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CORRECT_PASSWORD = 'FOCO*1234';
+        let isEditing = false;
+
+        // Verificar se já está logado
+        window.onload = function() {
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                showMainScreen();
+                loadData();
+            }
+            document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') checkPassword();
+            });
+        };
+
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value;
+            if (input === CORRECT_PASSWORD) {
+                localStorage.setItem('isLoggedIn', 'true');
+                showMainScreen();
+                loadData();
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('errorMsg').style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function showMainScreen() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainScreen').style.display = 'block';
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            location.reload();
+        }
+
+        function enableEdit() {
+            isEditing = !isEditing;
+            const editables = document.querySelectorAll('.editable');
+            editables.forEach(el => {
+                el.contentEditable = isEditing;
+                el.style.background = isEditing ? '#fffff0' : '#fff';
+                el.style.border = isEditing ? '1px solid #667eea' : '1px dashed #cbd5e0';
+            });
+            
+            if (isEditing) {
+                alert('Modo de edição ativado! Clique nas células para editar. Não esqueça de salvar!');
+            }
+        }
+
+        function saveData() {
+            const data = {};
+            const editables = document.querySelectorAll('.editable');
+            editables.forEach((el, index) => {
+                data['field' + index] = el.innerText;
+            });
+            localStorage.setItem('tableData', JSON.stringify(data));
+            
+            const msg = document.getElementById('successMsg');
+            msg.style.display = 'block';
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 3000);
+            
+            // Desativar edição após salvar
+            if (isEditing) {
+                enableEdit();
+            }
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('tableData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                const editables = document.querySelectorAll('.editable');
+                editables.forEach((el, index) => {
+                    if (data['field' + index]) {
+                        el.innerText = data['field' + index];
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
