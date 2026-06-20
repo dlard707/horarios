@@ -4,7 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Horários - Educadores</title>
+    
+    <!-- Google Fonts - Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            --panel-bg: rgba(30, 41, 59, 0.45);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,184 +31,625 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Outfit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Panel */
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            transition: all 0.3s ease;
         }
 
         /* Tela de Login */
         .login-container {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            text-align: center;
-            max-width: 400px;
             width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            text-align: center;
         }
 
         .login-container h2 {
-            color: #333;
-            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #a5b4fc, #e9d5ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-container p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 25px;
         }
 
         .login-container input {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 2px solid #ddd;
-            border-radius: 5px;
+            padding: 14px;
+            margin-bottom: 20px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
             font-size: 16px;
-            transition: border 0.3s;
+            color: var(--text-main);
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            text-align: center;
         }
 
         .login-container input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
         }
 
         .btn {
-            background: #667eea;
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 5px;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            padding: 11px 22px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
-            margin: 5px;
-            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
         }
 
         .btn-secondary {
-            background: #48bb78;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.3);
         }
 
         .btn-secondary:hover {
-            background: #38a169;
+            background: rgba(16, 185, 129, 0.25);
+            border-color: rgba(16, 185, 129, 0.4);
         }
 
         .btn-danger {
-            background: #f56565;
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.3);
         }
 
         .btn-danger:hover {
-            background: #e53e3e;
+            background: rgba(239, 68, 68, 0.25);
+            border-color: rgba(239, 68, 68, 0.4);
         }
 
         /* Conteúdo Principal */
         .main-container {
             display: none;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             width: 100%;
-            max-width: 1200px;
-            overflow: hidden;
+            max-width: 1150px;
+            margin: auto;
         }
 
         .header {
-            background: #667eea;
-            color: white;
-            padding: 20px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(168, 85, 247, 0.12) 100%);
+            border-bottom: 1px solid var(--panel-border);
+            padding: 30px 20px;
             text-align: center;
+            position: relative;
         }
 
         .header h1 {
-            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 26px;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+            background: linear-gradient(to right, #a5b4fc, #e9d5ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .cloud-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(15, 23, 42, 0.4);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 15px;
+            border: 1px solid var(--panel-border);
+            transition: all 0.3s;
+        }
+
+        .cloud-badge.syncing {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.3);
+            color: #fbbf24;
+        }
+
+        .cloud-badge.synced {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #34d399;
+        }
+
+        .cloud-badge.error {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+
+        .cloud-badge.offline {
+            background: rgba(148, 163, 184, 0.15);
+            border-color: rgba(148, 163, 184, 0.3);
+            color: #cbd5e1;
         }
 
         .toolbar {
-            padding: 15px;
-            background: #f7fafc;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 18px;
+            background: rgba(15, 23, 42, 0.2);
+            border-bottom: 1px solid var(--panel-border);
             display: flex;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
             justify-content: center;
         }
 
         .content {
-            padding: 20px;
+            padding: 30px;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #c084fc;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-wrapper {
             overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--panel-border);
+            margin-bottom: 35px;
+            background: rgba(15, 23, 42, 0.15);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            font-size: 14px;
         }
 
         th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
+            padding: 14px 18px;
             text-align: left;
+            border-bottom: 1px solid var(--panel-border);
         }
 
         th {
-            background: #667eea;
-            color: white;
-            font-weight: bold;
+            background: rgba(99, 102, 241, 0.08);
+            color: #c7d2fe;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.75px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
         }
 
         tr:nth-child(even) {
-            background: #f7fafc;
+            background: rgba(255, 255, 255, 0.01);
         }
 
         tr:hover {
-            background: #edf2f7;
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .editable {
-            background: #fff;
-            cursor: pointer;
-            border: 1px dashed #cbd5e0;
-            padding: 5px;
-            min-height: 20px;
+            border: 1px dashed transparent;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
         }
 
-        .editable:focus {
+        .editable[contenteditable="true"] {
+            background: rgba(253, 224, 71, 0.05);
+            border-color: var(--warning);
+            cursor: text;
             outline: none;
-            background: #fffff0;
-            border: 1px solid #667eea;
         }
 
         .total-row {
-            background: #667eea !important;
-            color: white;
-            font-weight: bold;
+            background: rgba(99, 102, 241, 0.12) !important;
+            font-weight: 600;
+            color: #a5b4fc;
         }
 
         .error-msg {
-            color: #e53e3e;
+            color: var(--danger);
             margin-top: 10px;
+            display: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Modais */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-container {
+            width: 90%;
+            max-width: 680px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--panel-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(30, 41, 59, 0.6);
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: var(--text-main);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--panel-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background: rgba(15, 23, 42, 0.3);
+        }
+
+        /* Tabs */
+        .tab-buttons {
+            display: flex;
+            border-bottom: 1px solid var(--panel-border);
+            margin-bottom: 20px;
+            gap: 8px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: inherit;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
             display: none;
         }
 
-        .success-msg {
-            background: #c6f6d5;
-            color: #22543d;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-            display: none;
+        .tab-content.active-content {
+            display: block;
+        }
+
+        /* Form Styles */
+        .form-instruction {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 15px;
+            margin-bottom: 14px;
+            align-items: center;
+        }
+
+        .form-row-schedule {
+            display: grid;
+            grid-template-columns: 90px 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 14px;
+            align-items: center;
+        }
+
+        .form-row-schedule label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--panel-border);
+            color: var(--text-main);
+            padding: 10px 14px;
+            border-radius: 6px;
+            width: 100%;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .schedule-headers {
+            display: grid;
+            grid-template-columns: 90px 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--panel-border);
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 2000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            font-size: 14px;
+            border: 1px solid transparent;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            background: rgba(16, 185, 129, 0.95);
+            border-color: rgba(16, 185, 129, 0.2);
+            color: white;
+        }
+
+        .toast-error {
+            background: rgba(239, 68, 68, 0.95);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: white;
+        }
+
+        .obs-card {
+            background: rgba(245, 158, 11, 0.08);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 25px;
+            border-left: 4px solid var(--warning);
+            border-top: 1px solid rgba(245, 158, 11, 0.1);
+            border-right: 1px solid rgba(245, 158, 11, 0.1);
+            border-bottom: 1px solid rgba(245, 158, 11, 0.1);
+        }
+
+        .obs-card strong {
+            color: #fbd38d;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .obs-card ul {
+            margin-left: 20px;
+            margin-top: 10px;
+            color: #e2e8f0;
+            font-size: 13.5px;
+        }
+
+        .obs-card li {
+            margin-bottom: 6px;
+        }
+
+        /* Badges de Educadores com Alto Contraste */
+        .educator-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 0.25px;
+            border: 1px solid transparent;
+            text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .educator-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .educator-0-badge {
+            color: #e9d5ff; /* Violeta claro */
+            background: rgba(168, 85, 247, 0.25);
+            border-color: rgba(168, 85, 247, 0.5);
+        }
+
+        .educator-1-badge {
+            color: #a7f3d0; /* Emerald claro */
+            background: rgba(16, 185, 129, 0.25);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .educator-2-badge {
+            color: #fecdd3; /* Rose claro */
+            background: rgba(244, 63, 94, 0.25);
+            border-color: rgba(244, 63, 94, 0.5);
+        }
+
+        .educator-3-badge {
+            color: #fef08a; /* Amber/Yellow claro */
+            background: rgba(234, 179, 8, 0.25);
+            border-color: rgba(234, 179, 8, 0.5);
+        }
+
+        .educator-4-badge {
+            color: #bae6fd; /* Sky claro */
+            background: rgba(14, 165, 233, 0.25);
+            border-color: rgba(14, 165, 233, 0.5);
         }
 
         @media print {
-            .toolbar, .login-container {
+            .toolbar, .login-container, .cloud-badge {
                 display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0;
             }
             .main-container {
                 display: block !important;
                 box-shadow: none;
+                background: transparent !important;
+                border: none !important;
+            }
+            th {
+                background: #f1f5f9 !important;
+                color: black !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+            td {
+                color: black !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+            .editable {
+                border: none !important;
+                background: transparent !important;
+            }
+            .total-row {
+                background: #cbd5e1 !important;
+                color: black !important;
             }
         }
     </style>
@@ -197,139 +657,299 @@
 <body>
 
     <!-- Tela de Login -->
-    <div class="login-container" id="loginScreen">
+    <div class="login-container glass-panel" id="loginScreen">
         <h2>🔐 Acesso Restrito</h2>
         <p>Digite a senha para acessar o sistema</p>
         <input type="password" id="passwordInput" placeholder="Digite a senha..." autofocus>
-        <button class="btn" onclick="checkPassword()">Entrar</button>
+        <button class="btn btn-primary" style="width: 100%;" onclick="checkPassword()">Entrar</button>
         <p class="error-msg" id="errorMsg">Senha incorreta!</p>
     </div>
 
     <!-- Conteúdo Principal -->
-    <div class="main-container" id="mainScreen">
+    <div class="main-container glass-panel" id="mainScreen">
         <div class="header">
             <h1>📅 Sistema de Controle de Horários</h1>
             <p>Gerenciamento de Aulas - Terças, Quartas e Quintas (19h às 22h)</p>
+            <div id="cloudBadge" class="cloud-badge offline">
+                <span id="cloudStatusIndicator" style="width:8px; height:8px; border-radius:50%; background:#94a3b8; display:inline-block;"></span>
+                <span id="cloudStatusText">Nuvem: Offline</span>
+            </div>
         </div>
 
         <div class="toolbar">
-            <button class="btn" onclick="enableEdit()">✏️ Editar Tabela</button>
+            <button class="btn btn-primary" onclick="openEditModal()">📋 Editar com Formulário</button>
+            <button class="btn" id="directEditBtn" onclick="enableEdit()">✏️ Edição Direta</button>
             <button class="btn btn-secondary" onclick="saveData()">💾 Salvar Alterações</button>
+            <button class="btn btn-secondary" onclick="openCloudModal()">⚙️ Configurar Nuvem</button>
             <button class="btn btn-secondary" onclick="window.print()">🖨️ Imprimir</button>
             <button class="btn btn-danger" onclick="logout()">🚪 Sair</button>
         </div>
 
         <div class="content">
-            <div class="success-msg" id="successMsg">Alterações salvas com sucesso!</div>
+            <h3>👥 Corpo Docente</h3>
+            <div class="table-wrapper">
+                <table id="teachersTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 35%;">Carga Horária</th>
+                            <th>Nome do Educador</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="editable" contenteditable="false" data-field="hours1">EDUCADOR 8H</td>
+                            <td class="editable" contenteditable="false" data-field="name1">ZIFIR MAIA CAMPOS</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false" data-field="hours2">EDUCADOR 15H</td>
+                            <td class="editable" contenteditable="false" data-field="name2">DAVID ARIEL LARRONDA</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false" data-field="hours3">EDUCADOR 13H</td>
+                            <td class="editable" contenteditable="false" data-field="name3">MARILENE PEREIRA DA SILVA</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false" data-field="hours4">EDUCADOR 15H</td>
+                            <td class="editable" contenteditable="false" data-field="name4">ARLINDO FERREIRA MAIA</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false" data-field="hours5">EDUCADOR 13H</td>
+                            <td class="editable" contenteditable="false" data-field="name5">ERIKA DE CASSIA CAPELLA</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td colspan="2">TOTAL DE HORAS 64</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-            <h3 style="margin: 20px 0 10px 0; color: #333;">👥 Corpo Docente</h3>
-            <table id="teachersTable">
-                <thead>
-                    <tr>
-                        <th>Carga Horária</th>
-                        <th>Nome do Educador</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="editable" contenteditable="false" data-field="hours1">EDUCADOR 8H</td>
-                        <td class="editable" contenteditable="false" data-field="name1">ZIFIR MAIA CAMPOS</td>
-                    </tr>
-                    <tr>
-                        <td class="editable" contenteditable="false" data-field="hours2">EDUCADOR 15H</td>
-                        <td class="editable" contenteditable="false" data-field="name2">DAVID ARIEL LARRONDA</td>
-                    </tr>
-                    <tr>
-                        <td class="editable" contenteditable="false" data-field="hours3">EDUCADOR 13H</td>
-                        <td class="editable" contenteditable="false" data-field="name3">MARILENE PEREIRA DA SILVA</td>
-                    </tr>
-                    <tr>
-                        <td class="editable" contenteditable="false" data-field="hours4">EDUCADOR 15H</td>
-                        <td class="editable" contenteditable="false" data-field="name4">ARLINDO FERREIRA MAIA</td>
-                    </tr>
-                    <tr>
-                        <td class="editable" contenteditable="false" data-field="hours5">EDUCADOR 13H</td>
-                        <td class="editable" contenteditable="false" data-field="name5">ERIKA DE CASSIA CAPELLA</td>
-                    </tr>
-                    <tr class="total-row">
-                        <td colspan="2">TOTAL DE HORAS 64</td>
-                    </tr>
-                </tbody>
-            </table>
+            <h3>📆 Escala Semanal de Aulas</h3>
+            <div class="table-wrapper">
+                <table id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">Semana</th>
+                            <th>Terça-feira (19h-22h)</th>
+                            <th>Quarta-feira (19h-22h)</th>
+                            <th>Quinta-feira (19h-22h)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="editable" contenteditable="false">Semana 1</td>
+                            <td class="editable" contenteditable="false">David (3h)</td>
+                            <td class="editable" contenteditable="false">Arlindo (3h)</td>
+                            <td class="editable" contenteditable="false">Marilene (3h)</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Semana 2</td>
+                            <td class="editable" contenteditable="false">Erika (3h)</td>
+                            <td class="editable" contenteditable="false">Zifir (3h)</td>
+                            <td class="editable" contenteditable="false">David (3h)</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Semana 3</td>
+                            <td class="editable" contenteditable="false">Arlindo (3h)</td>
+                            <td class="editable" contenteditable="false">Marilene (3h)</td>
+                            <td class="editable" contenteditable="false">Erika (3h)</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Semana 4</td>
+                            <td class="editable" contenteditable="false">David (3h)</td>
+                            <td class="editable" contenteditable="false">Arlindo (3h)</td>
+                            <td class="editable" contenteditable="false">Zifir (3h)</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Semana 5</td>
+                            <td class="editable" contenteditable="false">Marilene (3h)</td>
+                            <td class="editable" contenteditable="false">Erika (3h)</td>
+                            <td class="editable" contenteditable="false">David (3h)</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Semana 6</td>
+                            <td class="editable" contenteditable="false">Arlindo (3h)</td>
+                            <td class="editable" contenteditable="false">Marilene (3h)</td>
+                            <td class="editable" contenteditable="false">Erika (3h)</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Semana 7</td>
+                            <td class="editable" contenteditable="false">David (3h)</td>
+                            <td class="editable" contenteditable="false">Arlindo (3h)</td>
+                            <td class="editable" contenteditable="false">Zifir (2h) + Marilene/Erika (1h)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-            <h3 style="margin: 30px 0 10px 0; color: #333;">📆 Escala Semanal de Aulas</h3>
-            <table id="scheduleTable">
-                <thead>
-                    <tr>
-                        <th>Semana</th>
-                        <th>Terça-feira (19h-22h)</th>
-                        <th>Quarta-feira (19h-22h)</th>
-                        <th>Quinta-feira (19h-22h)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="editable" contenteditable="false">Semana 1</td>
-                        <td class="editable" contenteditable="false">David (3h)</td>
-                        <td class="editable" contenteditable="false">Arlindo (3h)</td>
-                        <td class="editable" contenteditable="false">Marilene (3h)</td>
-                    </tr>
-                    <tr>
-                        <td class="editable" contenteditable="false">Semana 2</td>
-                        <td class="editable" contenteditable="false">Erika (3h)</td>
-                        <td class="editable" contenteditable="false">Zifir (3h)</td>
-                        <td class="editable" contenteditable="false">David (3h)</td>
-                    </tr>
-                    <tr>
-                        <td class="editable" contenteditable="false">Semana 3</td>
-                        <td class="editable" contenteditable="false">Arlindo (3h)</td>
-                        <td class="editable" contenteditable="false">Marilene (3h)</td>
-                        <td class="editable" contenteditable="false">Erika (3h)</td>
-                    </tr>
-                    <tr>
-                        <td class="editable" contenteditable="false">Semana 4</td>
-                        <td class="editable" contenteditable="false">David (3h)</td>
-                        <td class="editable" contenteditable="false">Arlindo (3h)</td>
-                        <td class="editable" contenteditable="false">Zifir (3h)</td>
-                    </tr>
-                    <tr>
-                        <td class="editable" contenteditable="false">Semana 5</td>
-                        <td class="editable" contenteditable="false">Marilene (3h)</td>
-                        <td class="editable" contenteditable="false">Erika (3h)</td>
-                        <td class="editable" contenteditable="false">David (3h)</td>
-                    </tr>
-                    <tr>
-                        <td class="editable" contenteditable="false">Semana 6</td>
-                        <td class="editable" contenteditable="false">Arlindo (3h)</td>
-                        <td class="editable" contenteditable="false">Marilene (3h)</td>
-                        <td class="editable" contenteditable="false">Erika (3h)</td>
-                    </tr>
-                    <tr>
-                        <td class="editable" contenteditable="false">Semana 7</td>
-                        <td class="editable" contenteditable="false">David (3h)</td>
-                        <td class="editable" contenteditable="false">Arlindo (3h)</td>
-                        <td class="editable" contenteditable="false">Zifir (2h) + Marilene/Erika (1h)</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div style="background: #fef3c7; padding: 15px; border-radius: 5px; margin-top: 20px; border-left: 4px solid #f59e0b;">
+            <div class="obs-card">
                 <strong>⚠️ Observações:</strong>
-                <ul style="margin-left: 20px; margin-top: 10px;">
-                    <li>Clique em "Editar Tabela" para modificar os dados</li>
-                    <li>Após editar, clique em "Salvar Alterações" para guardar</li>
-                    <li>Os dados são salvos no navegador (localStorage)</li>
-                    <li>Use "Imprimir" para gerar PDF ou imprimir a tabela</li>
+                <ul>
+                    <li>Clique em "Editar com Formulário" para alterar os dados de forma estruturada</li>
+                    <li>Como alternativa, clique em "Edição Direta" para alterar valores direto na tabela</li>
+                    <li>Sempre clique em "Salvar Alterações" para salvar as alterações localmente e na nuvem</li>
+                    <li>Use "Imprimir" para gerar PDF ou imprimir a escala semanal</li>
                 </ul>
             </div>
         </div>
     </div>
 
+    <!-- Modal de Edição -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-container glass-panel">
+            <div class="modal-header">
+                <h2>📋 Editar Dados com Formulário</h2>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" id="btnTabEducadores" onclick="switchTab('educadores')">👥 Corpo Docente</button>
+                    <button class="tab-btn" id="btnTabEscala" onclick="switchTab('escala')">📆 Escala Semanal</button>
+                </div>
+                
+                <div id="tabContentEducadores" class="tab-content active-content">
+                    <div class="form-instruction">Altere as cargas horárias e nomes dos educadores:</div>
+                    <div id="educatorsFormFields">
+                        <!-- Gerado dinamicamente -->
+                    </div>
+                </div>
+
+                <div id="tabContentEscala" class="tab-content">
+                    <div class="form-instruction">Edite os horários programados de cada semana:</div>
+                    <div class="schedule-headers">
+                        <div>Semana</div>
+                        <div>Terça</div>
+                        <div>Quarta</div>
+                        <div>Quinta</div>
+                    </div>
+                    <div id="scheduleFormFields">
+                        <!-- Gerado dinamicamente -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeEditModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="submitForm()">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Configuração de Nuvem -->
+    <div class="modal-overlay" id="cloudModal">
+        <div class="modal-container glass-panel" style="max-width: 520px;">
+            <div class="modal-header">
+                <h2>⚙️ Configuração de Sincronização em Nuvem</h2>
+                <button class="close-btn" onclick="closeCloudModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 20px; font-size: 14px; color: var(--text-muted); line-height: 1.5;">
+                    Sincronize sua tabela com o Firebase Realtime Database. As alterações serão salvas automaticamente ao clicar no botão de salvar.
+                </p>
+                <div style="margin-bottom: 16px;">
+                    <label style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:#cbd5e1;">URL DO BANCO DE DADOS (FIREBASE RTDB):</label>
+                    <input type="text" id="cloudUrlInput" class="form-control" placeholder="https://seu-projeto-default-rtdb.firebaseio.com">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:#cbd5e1;">CAMINHO DOS DADOS (PATH):</label>
+                    <input type="text" id="cloudPathInput" class="form-control" placeholder="escala">
+                </div>
+                <div id="cloudTestResult" style="padding: 12px; border-radius: 6px; font-size: 13px; display: none; font-weight: 500;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeCloudModal()">Cancelar</button>
+                <button class="btn btn-secondary" onclick="testCloudConnection()">🧪 Testar Conexão</button>
+                <button class="btn btn-primary" onclick="saveCloudConfig()">Salvar e Sincronizar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastNotification" class="toast"></div>
+
     <script>
         const CORRECT_PASSWORD = 'FOCO*1234';
         let isEditing = false;
 
-        // Verificar se já está logado
+        // Configuração da nuvem
+        let cloudConfig = {
+            url: localStorage.getItem('cloudUrl') || '',
+            path: localStorage.getItem('cloudPath') || 'escala'
+        };
+
+        // Lista de educadores para colorização dinâmica
+        let educatorsList = [];
+
+        function updateEducatorsList() {
+            educatorsList = [];
+            const editables = document.querySelectorAll('.editable');
+            for (let i = 0; i < 5; i++) {
+                const nameCell = editables[2 * i + 1];
+                if (nameCell) {
+                    const rawText = nameCell.getAttribute('data-raw') || nameCell.innerText.trim();
+                    const first = rawText.split(' ')[0];
+                    educatorsList.push({
+                        fullName: rawText,
+                        firstName: first,
+                        badgeClass: `educator-${i}-badge`
+                    });
+                }
+            }
+        }
+
+        function formatText(text) {
+            if (!text) return '';
+            let html = text;
+            
+            const replacements = [];
+            const sortedEducators = [...educatorsList].sort((a, b) => b.fullName.length - a.fullName.length);
+            
+            sortedEducators.forEach(edu => {
+                if (!edu.firstName || edu.firstName.length < 2) return;
+                
+                const escapedFull = edu.fullName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                const escapedFirst = edu.firstName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                
+                const fullRegex = new RegExp(`(?<=^|[^a-zA-Z0-9À-ÿ])${escapedFull}(?=$|[^a-zA-Z0-9À-ÿ])`, 'gi');
+                html = html.replace(fullRegex, (match) => {
+                    const token = `__EDU_FULL_${replacements.length}__`;
+                    replacements.push({ token, html: `<span class="educator-badge ${edu.badgeClass}">${match}</span>` });
+                    return token;
+                });
+
+                const firstRegex = new RegExp(`(?<=^|[^a-zA-Z0-9À-ÿ])${escapedFirst}(?=$|[^a-zA-Z0-9À-ÿ])`, 'gi');
+                html = html.replace(firstRegex, (match) => {
+                    const token = `__EDU_FIRST_${replacements.length}__`;
+                    replacements.push({ token, html: `<span class="educator-badge ${edu.badgeClass}">${match}</span>` });
+                    return token;
+                });
+            });
+            
+            let replaced = true;
+            while (replaced) {
+                replaced = false;
+                replacements.forEach(r => {
+                    if (html.includes(r.token)) {
+                        html = html.replace(r.token, r.html);
+                        replaced = true;
+                    }
+                });
+            }
+            
+            return html;
+        }
+
+        function applyFormatting() {
+            updateEducatorsList();
+            const editables = document.querySelectorAll('.editable');
+            editables.forEach(el => {
+                if (!el.hasAttribute('data-raw')) {
+                    el.setAttribute('data-raw', el.innerText.trim());
+                }
+                const rawText = el.getAttribute('data-raw');
+                el.innerHTML = formatText(rawText);
+            });
+        }
+
+        // Carregar na inicialização
         window.onload = function() {
             if (localStorage.getItem('isLoggedIn') === 'true') {
                 showMainScreen();
@@ -364,50 +984,404 @@
             location.reload();
         }
 
+        // Mostrar Toast de Notificação
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toastNotification');
+            toast.innerText = message;
+            toast.className = `toast toast-${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        }
+
+        // Habilitar edição inline tradicional
         function enableEdit() {
             isEditing = !isEditing;
             const editables = document.querySelectorAll('.editable');
+            const btn = document.getElementById('directEditBtn');
+            
             editables.forEach(el => {
                 el.contentEditable = isEditing;
-                el.style.background = isEditing ? '#fffff0' : '#fff';
-                el.style.border = isEditing ? '1px solid #667eea' : '1px dashed #cbd5e0';
+                if (isEditing) {
+                    // Mostrar texto bruto para edição
+                    el.innerText = el.getAttribute('data-raw') || el.innerText;
+                    el.style.border = '1px dashed var(--warning)';
+                    el.style.background = 'rgba(253, 224, 71, 0.05)';
+                } else {
+                    // Bloquear e aplicar
+                    const newText = el.innerText.trim();
+                    el.setAttribute('data-raw', newText);
+                    el.style.border = '1px dashed transparent';
+                    el.style.background = 'transparent';
+                }
             });
             
             if (isEditing) {
-                alert('Modo de edição ativado! Clique nas células para editar. Não esqueça de salvar!');
+                btn.innerText = '🔒 Bloquear Tabela';
+                btn.classList.add('btn-danger');
+                showToast('Modo de edição direta ativado. Edite as células diretamente!', 'success');
+            } else {
+                btn.innerText = '✏️ Edição Direta';
+                btn.classList.remove('btn-danger');
+                showToast('Tabela bloqueada. Clique em Salvar para persistir as alterações!', 'success');
+                applyFormatting();
+                saveData();
             }
         }
 
-        function saveData() {
+        // Obter URL completa do Firebase
+        function getFirebaseFullUrl() {
+            if (!cloudConfig.url) return null;
+            let baseUrl = cloudConfig.url.trim();
+            if (!baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
+                baseUrl = 'https://' + baseUrl;
+            }
+            if (baseUrl.endsWith('/')) {
+                baseUrl = baseUrl.slice(0, -1);
+            }
+            return `${baseUrl}/${cloudConfig.path}.json`;
+        }
+
+        // Atualizar status visual da sincronização
+        function updateCloudStatus(status, details = '') {
+            const badge = document.getElementById('cloudBadge');
+            const indicator = document.getElementById('cloudStatusIndicator');
+            const text = document.getElementById('cloudStatusText');
+
+            badge.className = 'cloud-badge ' + status;
+            
+            if (status === 'syncing') {
+                indicator.style.background = '#fbbf24';
+                text.innerText = 'Nuvem: Sincronizando...';
+            } else if (status === 'synced') {
+                indicator.style.background = '#34d399';
+                text.innerText = 'Nuvem: Conectada';
+                badge.title = 'Todos os dados salvos em nuvem.';
+            } else if (status === 'error') {
+                indicator.style.background = '#f87171';
+                text.innerText = 'Nuvem: Erro de Conexão';
+                badge.title = details || 'Falha ao salvar/ler os dados na nuvem.';
+            } else {
+                indicator.style.background = '#cbd5e1';
+                text.innerText = 'Nuvem: Offline';
+                badge.title = 'Apenas armazenamento local configurado.';
+            }
+        }
+
+        // Salvar todos os dados (Local + Nuvem)
+        async function saveData() {
             const data = {};
             const editables = document.querySelectorAll('.editable');
             editables.forEach((el, index) => {
-                data['field' + index] = el.innerText;
+                data['field' + index] = el.getAttribute('data-raw') || el.innerText;
             });
+
+            // Recalcular horas dinamicamente
+            updateTotalHours();
+
+            // Salvar no localStorage (Garantia local)
             localStorage.setItem('tableData', JSON.stringify(data));
             
-            const msg = document.getElementById('successMsg');
-            msg.style.display = 'block';
-            setTimeout(() => {
-                msg.style.display = 'none';
-            }, 3000);
+            const dbUrl = getFirebaseFullUrl();
+            if (dbUrl) {
+                updateCloudStatus('syncing');
+                try {
+                    const response = await fetch(dbUrl, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (response.ok) {
+                        updateCloudStatus('synced');
+                        showToast('Alterações salvas no local e na nuvem!');
+                    } else {
+                        throw new Error(`Erro HTTP: ${response.status}`);
+                    }
+                } catch (error) {
+                    console.error('Falha de sincronização na nuvem:', error);
+                    updateCloudStatus('error', error.message);
+                    showToast('Salvo apenas no navegador (Sem conexão com a nuvem)', 'error');
+                }
+            } else {
+                updateCloudStatus('offline');
+                showToast('Alterações salvas localmente!');
+            }
             
-            // Desativar edição após salvar
+            // Desativar edição direta caso esteja ativa
             if (isEditing) {
                 enableEdit();
             }
         }
 
-        function loadData() {
-            const saved = localStorage.getItem('tableData');
-            if (saved) {
-                const data = JSON.parse(saved);
-                const editables = document.querySelectorAll('.editable');
-                editables.forEach((el, index) => {
-                    if (data['field' + index]) {
-                        el.innerText = data['field' + index];
+        // Carregar dados
+        async function loadData() {
+            const dbUrl = getFirebaseFullUrl();
+            let dataLoaded = false;
+            
+            if (dbUrl) {
+                updateCloudStatus('syncing');
+                try {
+                    const response = await fetch(dbUrl);
+                    if (response.ok) {
+                        const cloudData = await response.json();
+                        if (cloudData && Object.keys(cloudData).length > 0) {
+                            applyDataToTable(cloudData);
+                            localStorage.setItem('tableData', JSON.stringify(cloudData));
+                            updateCloudStatus('synced');
+                            dataLoaded = true;
+                        }
+                    } else {
+                        throw new Error(`HTTP ${response.status}`);
                     }
-                });
+                } catch (error) {
+                    console.warn('Erro ao ler da nuvem. Carregando dados locais de fallback:', error);
+                    updateCloudStatus('error', 'Falha ao buscar dados da nuvem. Exibindo cópia local.');
+                }
+            }
+            
+            // Fallback para localStorage
+            if (!dataLoaded) {
+                const saved = localStorage.getItem('tableData');
+                if (saved) {
+                    applyDataToTable(JSON.parse(saved));
+                } else {
+                    updateCloudStatus('offline');
+                    applyFormatting();
+                }
+            }
+
+            updateTotalHours();
+        }
+
+        // Popular a tabela com dados obtidos
+        function applyDataToTable(data) {
+            const editables = document.querySelectorAll('.editable');
+            editables.forEach((el, index) => {
+                if (data['field' + index] !== undefined) {
+                    el.innerText = data['field' + index];
+                    el.setAttribute('data-raw', data['field' + index]);
+                }
+            });
+            applyFormatting();
+        }
+
+        // Recalcular Carga Horária Total Dinamicamente
+        function updateTotalHours() {
+            let total = 0;
+            const editables = document.querySelectorAll('.editable');
+            for (let i = 0; i < 5; i++) {
+                const hoursCell = editables[2 * i];
+                if (hoursCell) {
+                    const text = hoursCell.getAttribute('data-raw') || hoursCell.innerText;
+                    const match = text.match(/(\d+)/);
+                    if (match) {
+                        total += parseInt(match[1], 10);
+                    }
+                }
+            }
+            const totalRow = document.querySelector('.total-row td');
+            if (totalRow) {
+                totalRow.innerText = `TOTAL DE HORAS ${total}`;
+            }
+        }
+
+        /* LÓGICA DO MODAL DE EDIÇÃO POR FORMULÁRIO */
+        function openEditModal() {
+            const editables = document.querySelectorAll('.editable');
+            
+            // Popular Educadores
+            const educatorsContainer = document.getElementById('educatorsFormFields');
+            educatorsContainer.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
+                const hoursVal = editables[2 * i].getAttribute('data-raw') || editables[2 * i].innerText;
+                const nameVal = editables[2 * i + 1].getAttribute('data-raw') || editables[2 * i + 1].innerText;
+                
+                educatorsContainer.innerHTML += `
+                    <div class="form-row">
+                        <div>
+                            <label>Carga Horária:</label>
+                            <input type="text" class="form-control educator-hours" data-index="${2 * i}" value="${hoursVal}" required>
+                        </div>
+                        <div>
+                            <label>Nome do Educador:</label>
+                            <input type="text" class="form-control educator-name" data-index="${2 * i + 1}" value="${nameVal}" required>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Popular Escala Semanal
+            const scheduleContainer = document.getElementById('scheduleFormFields');
+            scheduleContainer.innerHTML = '';
+            for (let w = 0; w < 7; w++) {
+                const baseIdx = 10 + 4 * w;
+                const semVal = editables[baseIdx].getAttribute('data-raw') || editables[baseIdx].innerText;
+                const terVal = editables[baseIdx + 1].getAttribute('data-raw') || editables[baseIdx + 1].innerText;
+                const quaVal = editables[baseIdx + 2].getAttribute('data-raw') || editables[baseIdx + 2].innerText;
+                const quiVal = editables[baseIdx + 3].getAttribute('data-raw') || editables[baseIdx + 3].innerText;
+                
+                scheduleContainer.innerHTML += `
+                    <div class="form-row-schedule">
+                        <label>${semVal}</label>
+                        <input type="text" class="form-control schedule-day" data-index="${baseIdx + 1}" value="${terVal}" required>
+                        <input type="text" class="form-control schedule-day" data-index="${baseIdx + 2}" value="${quaVal}" required>
+                        <input type="text" class="form-control schedule-day" data-index="${baseIdx + 3}" value="${quiVal}" required>
+                        <input type="hidden" class="schedule-semana" data-index="${baseIdx}" value="${semVal}">
+                    </div>
+                `;
+            }
+
+            document.getElementById('editModal').classList.add('active');
+            switchTab('educadores');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        // Alternar abas do modal de formulário
+        function switchTab(tab) {
+            const btnEducadores = document.getElementById('btnTabEducadores');
+            const btnEscala = document.getElementById('btnTabEscala');
+            const contentEducadores = document.getElementById('tabContentEducadores');
+            const contentEscala = document.getElementById('tabContentEscala');
+
+            if (tab === 'educadores') {
+                btnEducadores.classList.add('active');
+                btnEscala.classList.remove('active');
+                contentEducadores.classList.add('active-content');
+                contentEscala.style.display = 'none';
+            } else {
+                btnEducadores.classList.remove('active');
+                btnEscala.classList.add('active');
+                contentEducadores.classList.remove('active-content');
+                contentEscala.style.display = 'block';
+            }
+        }
+
+        // Aplicar alterações do Formulário
+        function submitForm() {
+            const editables = document.querySelectorAll('.editable');
+            const inputs = document.getElementById('editModal').querySelectorAll('input');
+            
+            // Validar se existem campos vazios
+            let hasEmpty = false;
+            inputs.forEach(input => {
+                if (input.type !== 'hidden' && !input.value.trim()) {
+                    hasEmpty = true;
+                    input.style.borderColor = 'var(--danger)';
+                } else {
+                    input.style.borderColor = '';
+                }
+            });
+
+            if (hasEmpty) {
+                showToast('Por favor, preencha todos os campos do formulário.', 'error');
+                return;
+            }
+
+            // Atualizar os valores nas células da tabela
+            inputs.forEach(input => {
+                const idx = parseInt(input.getAttribute('data-index'), 10);
+                if (editables[idx]) {
+                    const val = input.value.trim();
+                    editables[idx].innerText = val;
+                    editables[idx].setAttribute('data-raw', val);
+                }
+            });
+
+            // Fechar modal
+            closeEditModal();
+            
+            // Sincronizar e Salvar
+            applyFormatting();
+            saveData();
+        }
+
+        /* LÓGICA DO MODAL DE CONFIGURAÇÃO DE NUVEM */
+        function openCloudModal() {
+            document.getElementById('cloudUrlInput').value = cloudConfig.url;
+            document.getElementById('cloudPathInput').value = cloudConfig.path;
+            
+            const resultDiv = document.getElementById('cloudTestResult');
+            resultDiv.style.display = 'none';
+            
+            document.getElementById('cloudModal').classList.add('active');
+        }
+
+        function closeCloudModal() {
+            document.getElementById('cloudModal').classList.remove('active');
+        }
+
+        // Salvar as configurações da nuvem informadas
+        function saveCloudConfig() {
+            const url = document.getElementById('cloudUrlInput').value.trim();
+            const path = document.getElementById('cloudPathInput').value.trim() || 'escala';
+
+            cloudConfig.url = url;
+            cloudConfig.path = path;
+
+            localStorage.setItem('cloudUrl', url);
+            localStorage.setItem('cloudPath', path);
+
+            closeCloudModal();
+            showToast('Configuração de nuvem atualizada! Recarregando dados...', 'success');
+            
+            // Recarregar os dados a partir do novo endpoint de nuvem
+            loadData();
+        }
+
+        // Testar a conexão com o Firebase RTDB informado
+        async function testCloudConnection() {
+            const urlInput = document.getElementById('cloudUrlInput').value.trim();
+            const pathInput = document.getElementById('cloudPathInput').value.trim() || 'escala';
+            const resultDiv = document.getElementById('cloudTestResult');
+
+            if (!urlInput) {
+                resultDiv.style.display = 'block';
+                resultDiv.style.background = 'rgba(239, 68, 68, 0.2)';
+                resultDiv.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+                resultDiv.style.color = '#f87171';
+                resultDiv.innerText = 'Por favor, insira a URL do Firebase.';
+                return;
+            }
+
+            let testUrl = urlInput;
+            if (!testUrl.startsWith('http://') && !testUrl.startsWith('https://')) {
+                testUrl = 'https://' + testUrl;
+            }
+            if (testUrl.endsWith('/')) {
+                testUrl = testUrl.slice(0, -1);
+            }
+            testUrl = `${testUrl}/${pathInput}.json`;
+
+            resultDiv.style.display = 'block';
+            resultDiv.style.background = 'rgba(245, 158, 11, 0.2)';
+            resultDiv.style.border = '1px solid rgba(245, 158, 11, 0.4)';
+            resultDiv.style.color = '#fbbf24';
+            resultDiv.innerText = 'Testando conexão...';
+
+            try {
+                // Tenta realizar um GET na URL informada
+                const response = await fetch(testUrl, { method: 'GET' });
+                
+                if (response.ok) {
+                    resultDiv.style.background = 'rgba(16, 185, 129, 0.2)';
+                    resultDiv.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+                    resultDiv.style.color = '#34d399';
+                    resultDiv.innerText = '✅ Conexão estabelecida com sucesso na nuvem!';
+                } else {
+                    throw new Error(`Código de resposta: ${response.status}`);
+                }
+            } catch (error) {
+                resultDiv.style.background = 'rgba(239, 68, 68, 0.2)';
+                resultDiv.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+                resultDiv.style.color = '#f87171';
+                resultDiv.innerText = `❌ Falha ao conectar: ${error.message}. Verifique a URL e as regras de segurança do seu Firebase.`;
             }
         }
     </script>
